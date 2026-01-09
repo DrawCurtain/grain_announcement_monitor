@@ -66,8 +66,17 @@ def monitor_task():
             
             if new_announcements:
                 logger.info(f"监控目标 {target['name']} 发现 {len(new_announcements)} 条新公告")
+            else:
+                logger.info(f"监控目标 {target['name']} 没有发现新公告")
+        except requests.RequestException as e:
+            logger.error(f"监控目标 {target['name']} 网络连接失败: {str(e)}")
+            logger.error(f"目标URL: {target.get('api_url', target.get('url', ''))}")
+            logger.info("建议检查网络连接或目标网站是否可访问")
+            continue
         except Exception as e:
             logger.error(f"处理监控目标 {target['name']} 时出错: {str(e)}")
+            import traceback
+            logger.error(f"错误详情: {traceback.format_exc()}")
             continue
     
     # 发送邮件通知
