@@ -27,6 +27,9 @@ jobs:
       
       - name: Run monitor script
         env:
+          # 代理配置，可在GitHub Secrets中配置国内代理地址
+          HTTP_PROXY: ${{ secrets.HTTP_PROXY }}
+          HTTPS_PROXY: ${{ secrets.HTTPS_PROXY }}
           # 邮箱配置，这些值将从GitHub仓库的Settings > Secrets and variables > Actions中读取
           EMAIL_SMTP_SERVER: ${{ secrets.EMAIL_SMTP_SERVER }}
           EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
