@@ -7,6 +7,7 @@
 """
 
 import time
+import requests
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 # 导入配置
