@@ -1,13 +1,13 @@
+# 编译缓存
+__pycache__/
+*.pyc
+*.pyo
+
 # 数据库文件
 *.db
 
 # 日志文件
 *.log
-
-# Python编译缓存
-__pycache__/
-*.pyc
-*.pyo
 
 # 环境文件
 .env
@@ -25,9 +25,16 @@ Thumbs.db
 *.swo
 *~
 
-# 临时文件
-*.tmp
-*.temp
+# 构建文件
+build/
+dist/
+*.spec
+*.exe
+
+# 虚拟环境
+venv/
+env/
+.env/
 
 # 其他
 *.bak
