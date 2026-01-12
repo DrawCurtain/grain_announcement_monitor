@@ -87,6 +87,8 @@ def monitor_task():
     logger.info("监控任务执行完成")
 
 
+import sys
+
 # 主函数
 def main():
     """主程序入口"""
@@ -103,26 +105,32 @@ def main():
     # 立即执行一次监控任务
     monitor_task()
     
-    # 设置定时任务
-    scheduler = BlockingScheduler()
-    scheduler.add_job(
-        monitor_task,
-        'interval',
-        seconds=MONITOR_CONFIG['monitor_interval'],
-        id='grain_monitor_job',
-        name='粮食公告监控任务'
-    )
-    
-    logger.info(f"定时任务已设置，监控间隔: {MONITOR_CONFIG['monitor_interval']}秒")
-    
-    try:
-        scheduler.start()
-    except KeyboardInterrupt:
-        logger.info("系统已停止")
-        scheduler.shutdown()
-    except Exception as e:
-        logger.error(f"定时任务执行失败: {str(e)}")
-        scheduler.shutdown()
+    # 检查命令行参数，决定是否启动定时任务
+    # --no-scheduler 选项用于在CI/CD环境中只执行一次
+    if "--no-scheduler" not in sys.argv:
+        # 设置定时任务
+        scheduler = BlockingScheduler()
+        scheduler.add_job(
+            monitor_task,
+            'interval',
+            seconds=MONITOR_CONFIG['monitor_interval'],
+            id='grain_monitor_job',
+            name='粮食公告监控任务'
+        )
+        
+        logger.info(f"定时任务已设置，监控间隔: {MONITOR_CONFIG['monitor_interval']}秒")
+        
+        try:
+            scheduler.start()
+        except KeyboardInterrupt:
+            logger.info("系统已停止")
+            scheduler.shutdown()
+        except Exception as e:
+            logger.error(f"定时任务执行失败: {str(e)}")
+            scheduler.shutdown()
+    else:
+        logger.info("已设置--no-scheduler选项，只执行一次监控任务，不启动定时任务")
+        logger.info("粮食公告监控系统执行完成")
 
 
 if __name__ == '__main__':
