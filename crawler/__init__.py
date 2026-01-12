@@ -10,7 +10,6 @@ from utils import retry, setup_logger
 from config import MONITOR_CONFIG
 import requests
 import json
-import os
 
 logger = setup_logger()
 
@@ -25,13 +24,6 @@ class APICrawler:
         self.request_config = MONITOR_CONFIG.get('request', {})
         self.timeout = self.request_config.get('timeout', 30)
         self.headers = self.request_config.get('headers', {})
-        # 从环境变量获取代理配置
-        self.proxies = {
-            'http': os.environ.get('HTTP_PROXY'),
-            'https': os.environ.get('HTTPS_PROXY')
-        }
-        # 移除空值的代理配置
-        self.proxies = {k: v for k, v in self.proxies.items() if v}
         
     @retry(max_retries=3, delay=2, backoff=2, exceptions=(requests.RequestException,))
     def fetch_announcements(self, api_url, tag_id, article_type):
@@ -59,8 +51,7 @@ class APICrawler:
             api_url,
             data=payload,
             headers=self.headers,
-            timeout=self.timeout,
-            proxies=self.proxies
+            timeout=self.timeout
         )
         
         response.raise_for_status()  # 检查请求是否成功
