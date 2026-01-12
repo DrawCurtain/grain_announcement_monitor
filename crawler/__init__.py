@@ -58,7 +58,7 @@ class APICrawler:
         response = requests.post(
             api_url,
             data=payload,
-            headers=headers,
+            headers=self.headers,
             timeout=self.timeout,
             proxies=self.proxies
         )
